@@ -1,0 +1,66 @@
+<h1>BookMarks#index</h1>
+<p>Find me in app/views/book_marks/index.html.erb</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>サイト名</th>
+      <th>URL</th>
+      <th>星</th>
+      <th>メモ</th>
+      <th>画像</th>
+      <th>登録日</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @book_marks.each do |book_mark| %>
+      <tr>
+        <td><%= book_mark.name %></td>
+        <td><%= link_to book_mark.url, book_mark.url %></td>
+        <td><%= book_mark.evaluation %></td>
+        <td><%= book_mark.memo %></td>
+        <td>
+          <% if book_mark.images.attached? %>
+            <% book_mark.images.each do |image| %>
+              <%= image_tag image.variant(resize_to_limit: [100, 100]) %>
+            <% end %>
+          <% end %>
+        </td>
+        <td><%= book_mark.created_at %></td>
+        </tr>
+    <% end %>
+  </tbody>
+
+</table>
+
+<%= form_with model: @book_mark do |f| %>
+  <%= f.label :name, '登録名' %>
+  <%= f.text_field :name %>
+
+  <%= f.label :url, 'URL' %>
+  <%= f.text_field :url %>
+
+
+
+  <%= f.label :memo, 'メモ' %>
+  <%= f.text_area :memo %>
+
+  <%= f.label :image, '画像（複数選択可）' %>
+  <%= f.file_field :images, direct_upload: true, multiple: true, accept: "image/*" %>
+
+  <div class="main-rating">
+      <div class="ratings mb-3">
+        <span class="fa fa-star-o" id="star"></span>
+        <span class="fa fa-star-o" id="star"></span>
+        <span class="fa fa-star-o" id="star"></span>
+        <span class="fa fa-star-o" id="star"></span>
+        <span class="fa fa-star-o" id="star"></span>
+      </div>
+      <div class="ml-3 rating-value-display"><span id="rating-value-display">0</span>/5</div>
+    </div>
+    <%= f.hidden_field :evaluation, id: "rating-value" %>
+
+  <%= f.submit '登録' %>
+<% end %>
+
+<%= javascript_pack_tag 'reviews' %>
